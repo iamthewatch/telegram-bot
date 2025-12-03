@@ -2,6 +2,7 @@ package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
 import kz.iamthewatch.springbot.events.MessageEvent;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,13 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class LanguageCommand implements Command {
 
     private final ApplicationEventPublisher eventPublisher;
-
-    public LanguageCommand(ApplicationEventPublisher eventPublisher) {
-        this.eventPublisher = eventPublisher;
-    }
 
     @Override
     public boolean canHandle(Update update) {
@@ -62,7 +60,7 @@ public class LanguageCommand implements Command {
         ));
 
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text("English")
+                .text("Қазақ")
                 .callbackData("lang_en")
                 .build()
         ));

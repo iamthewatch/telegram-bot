@@ -1,6 +1,7 @@
 package kz.iamthewatch.springbot.bot;
 
 import kz.iamthewatch.springbot.commands.CommandHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
@@ -9,16 +10,13 @@ import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateC
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
+@RequiredArgsConstructor
 public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
     private final CommandHandler commandHandler;
 
     @Value("${bot.token}")
     private String botToken;
-
-    public TelegramBot(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
-    }
 
     @Override
     public String getBotToken() {

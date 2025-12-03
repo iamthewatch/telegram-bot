@@ -2,46 +2,41 @@ package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
 import kz.iamthewatch.springbot.events.MessageEvent;
+import kz.iamthewatch.springbot.service.LocalizationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class AboutCommand implements Command {
 
     private final ApplicationEventPublisher eventPublisher;
-
-    public AboutCommand(ApplicationEventPublisher eventPublisher) {
-        this.eventPublisher = eventPublisher;
-    }
+    private final LocalizationService localizationService;
 
     @Override
     public boolean canHandle(Update update) {
         if (!update.hasMessage() || !update.getMessage().hasText()){
             return false;
         }
-        return update.getMessage().getText().equals("/about");
+        Long chatId = update.getMessage().getChatId();
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.about");
+        return update.getMessage().getText().equals(localizedMessage);
     }
 
     @Override
     public void handle(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
-            long chatId = update.getMessage().getChatId();
+            Long chatId = update.getMessage().getChatId();
+            String localizedMessage = localizationService.getLocalizedMessage(chatId, "system.about");
 
             SendMessage message = SendMessage
                     .builder()
                     .chatId(chatId)
-                    .text("Привет я тестовый бот Фархата")
+                    .text(localizedMessage)
                     .build();
 
             eventPublisher.publishEvent(new MessageEvent(this, message));
