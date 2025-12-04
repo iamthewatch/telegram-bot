@@ -2,6 +2,7 @@ package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
 import kz.iamthewatch.springbot.events.MessageEvent;
+import kz.iamthewatch.springbot.service.KeyboardService;
 import kz.iamthewatch.springbot.service.LocalizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,10 +12,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 @RequiredArgsConstructor
-public class AboutCommand implements Command {
+public class StartCommand implements Command {
 
     private final ApplicationEventPublisher eventPublisher;
     private final LocalizationService localizationService;
+    private final KeyboardService keyboardService;
 
     @Override
     public boolean canHandle(Update update) {
@@ -22,7 +24,7 @@ public class AboutCommand implements Command {
             return false;
         }
         Long chatId = update.getMessage().getChatId();
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.about");
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.start");
         return update.getMessage().getText().equals(localizedMessage);
     }
 
@@ -31,12 +33,13 @@ public class AboutCommand implements Command {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             Long chatId = update.getMessage().getChatId();
-            String localizedMessage = localizationService.getLocalizedMessage(chatId, "system.about");
+            String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.welcome");
 
             SendMessage message = SendMessage
                     .builder()
                     .chatId(chatId)
                     .text(localizedMessage)
+                    .replyMarkup(keyboardService.getMainMenuKeyboard(chatId))
                     .build();
 
             eventPublisher.publishEvent(new MessageEvent(this, message));
@@ -45,6 +48,6 @@ public class AboutCommand implements Command {
 
     @Override
     public String getCommand() {
-        return CommandName.ABOUT.name();
+        return CommandName.START.name();
     }
 }
