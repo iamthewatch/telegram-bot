@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
       file: db/changelog/01-create-user-session.yaml
+  - include:
+      file: db/changelog/02-consultation-request.yaml
+  - include:
+      file: db/changelog/03-consultation-credit-type.yaml

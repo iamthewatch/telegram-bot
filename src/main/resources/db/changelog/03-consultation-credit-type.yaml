@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-consultation-credit-state
+      author: iamthewatch
+      changes:
+        - addColumn:
+            tableName: user_session
+            columns:
+              - column:
+                  name: consultation_credit_type
+                  type: VARCHAR(50)
+              - column:
+                  name: awaiting_consultation_credit_type
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: awaiting_consultation_confirmation
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+      rollback:
+        - dropColumn:
+            tableName: user_session
+            columnName: consultation_credit_type
+        - dropColumn:
+            tableName: user_session
+            columnName: awaiting_consultation_credit_type
+        - dropColumn:
+            tableName: user_session
+            columnName: awaiting_consultation_confirmation
+
+  - changeSet:
+      id: add-credit-type-column
+      author: iamthewatch
+      changes:
+        - addColumn:
+            tableName: consultation_request
+            columns:
+              - column:
+                  name: credit_type
+                  type: VARCHAR(255)
+                  defaultValue: unknown
+                  constraints:
+                    nullable: false
+        - dropColumn:
+            tableName: consultation_request
+            columnName: client_type
+      rollback:
+        - addColumn:
+            tableName: consultation_request
+            columns:
+              - column:
+                  name: client_type
+                  type: VARCHAR(255)
+        - dropColumn:
+            tableName: consultation_request
+            columnName: credit_type
+

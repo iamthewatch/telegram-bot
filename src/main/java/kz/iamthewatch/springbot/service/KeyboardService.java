@@ -20,15 +20,13 @@ public class KeyboardService {
 
         KeyboardRow row1 = new KeyboardRow();
         row1.add(localizationService.getLocalizedMessage(chatId, "menu.about"));
+        row1.add(localizationService.getLocalizedMessage(chatId, "menu.language"));
         keyboardRows.add(row1);
 
         KeyboardRow row2 = new KeyboardRow();
-        row1.add(localizationService.getLocalizedMessage(chatId, "menu.language"));
+        row2.add(localizationService.getLocalizedMessage(chatId, "menu.consultation.request"));
+        row2.add(localizationService.getLocalizedMessage(chatId, "menu.ask.question"));
         keyboardRows.add(row2);
-
-        KeyboardRow row3 = new KeyboardRow();
-        row1.add(localizationService.getLocalizedMessage(chatId, "menu.consultation.request"));
-        keyboardRows.add(row3);
 
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(keyboardRows);
         keyboardMarkup.setResizeKeyboard(true);

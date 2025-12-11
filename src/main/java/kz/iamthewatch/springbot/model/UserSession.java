@@ -26,4 +26,19 @@ public class UserSession {
 
     @Column(name = "locale")
     private String locale;
+
+    @Column(name = "consultation_person_type")
+    private String consultationPersonType;
+
+    @Column(name = "awaiting_consultation_client_type")
+    private Boolean awaitingConsultationClientType;
+
+    @Column(name = "consultation_credit_type")
+    private String consultationCreditType;
+
+    @Column(name = "awaiting_consultation_credit_type")
+    private Boolean awaitingConsultationCreditType;
+
+    @Column(name = "awaiting_consultation_confirmation")
+    private Boolean awaitingConsultationConfirmation;
 }
