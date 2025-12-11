@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static kz.iamthewatch.springbot.commands.LanguageCommand.LANG_KZ;
-import static kz.iamthewatch.springbot.commands.LanguageCommand.LANG_RU;
+import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_KZ;
+import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_RU;
 
 @Component
 @RequiredArgsConstructor

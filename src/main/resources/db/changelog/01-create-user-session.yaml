@@ -20,10 +20,6 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: first_name
-                  type: VARCHAR(255)
-
-              - column:
                   name: locale
                   type: VARCHAR(20)
 

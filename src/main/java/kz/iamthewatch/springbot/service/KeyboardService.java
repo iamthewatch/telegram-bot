@@ -26,6 +26,10 @@ public class KeyboardService {
         row1.add(localizationService.getLocalizedMessage(chatId, "menu.language"));
         keyboardRows.add(row2);
 
+        KeyboardRow row3 = new KeyboardRow();
+        row1.add(localizationService.getLocalizedMessage(chatId, "menu.consultation.request"));
+        keyboardRows.add(row3);
+
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(keyboardRows);
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboard(false);

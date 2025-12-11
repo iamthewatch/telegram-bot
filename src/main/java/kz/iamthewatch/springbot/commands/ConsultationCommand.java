@@ -16,12 +16,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_KZ;
-import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_RU;
+import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_FL;
+import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_UL;
 
 @Component
 @RequiredArgsConstructor
-public class LanguageCommand implements Command {
+public class ConsultationCommand implements Command {
 
     private final ApplicationEventPublisher eventPublisher;
     private final LocalizationService localizationService;
@@ -32,7 +32,7 @@ public class LanguageCommand implements Command {
             return false;
         }
         Long chatId = update.getMessage().getChatId();
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.language");
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.consultation.request");
         return update.getMessage().getText().equals(localizedMessage);
     }
 
@@ -41,13 +41,13 @@ public class LanguageCommand implements Command {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             Long chatId = update.getMessage().getChatId();
-            String localizedMessage = localizationService.getLocalizedMessage(chatId, "language.select");
+            String localizedMessage = localizationService.getLocalizedMessage(chatId, "person.type.select");
 
             SendMessage message = SendMessage
                     .builder()
                     .chatId(chatId)
                     .text(localizedMessage)
-                    .replyMarkup(getLanguageKeyboard(chatId))
+                    .replyMarkup(getPersonTypeKeyboard(chatId))
                     .build();
 
             eventPublisher.publishEvent(new MessageEvent(this, message));
@@ -56,20 +56,20 @@ public class LanguageCommand implements Command {
 
     @Override
     public String getCommand() {
-        return CommandName.LANGUAGE.name();
+        return CommandName.CONSULTATION_REQUEST.name();
     }
 
-    private ReplyKeyboard getLanguageKeyboard(Long chatId) {
+    private ReplyKeyboard getPersonTypeKeyboard(Long chatId) {
         List<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "language.ru"))
-                .callbackData(LANG_RU)
+                .text(localizationService.getLocalizedMessage(chatId, "person.type.fl"))
+                .callbackData(PERSON_FL)
                 .build()
         ));
 
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "language.kk"))
-                .callbackData(LANG_KZ)
+                .text(localizationService.getLocalizedMessage(chatId, "person.type.ul"))
+                .callbackData(PERSON_UL)
                 .build()
         ));
 

@@ -24,9 +24,6 @@ public class UserSession {
     @Column(name = "chat_id")
     private Long chatId;
 
-    @Column(name = "first_name")
-    private String firstName;
-
     @Column(name = "locale")
     private String locale;
 }

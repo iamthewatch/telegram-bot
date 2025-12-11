@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum CommandName {
     ABOUT("ABOUT_COMMAND"),
     LANGUAGE("LANGUAGE_COMMAND"),
-    START("START_COMMAND");
+    START("START_COMMAND"),
+    CONSULTATION_REQUEST("CONSULTATION_REQUEST_COMMAND");
 
     private final String name;
 }
