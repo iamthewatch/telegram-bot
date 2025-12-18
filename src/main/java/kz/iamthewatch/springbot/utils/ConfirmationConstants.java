@@ -7,4 +7,3 @@ public class ConfirmationConstants {
     public static final String CONFIRM_YES = "confirm_yes";
     public static final String CONFIRM_NO = "confirm_no";
 }
-

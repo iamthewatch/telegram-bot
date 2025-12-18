@@ -60,7 +60,6 @@ public class ConsultationConfirmCallbackCommand implements Command {
             return;
         }
 
-        // CONFIRM_NO
         userSessionService.clearConsultationFlow(chatId);
         SendMessage message = SendMessage
                 .builder()
@@ -76,4 +75,3 @@ public class ConsultationConfirmCallbackCommand implements Command {
         return CommandName.CONSULTATION_REQUEST.name();
     }
 }
-

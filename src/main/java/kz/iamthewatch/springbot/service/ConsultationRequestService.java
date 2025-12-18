@@ -12,12 +12,12 @@ public class ConsultationRequestService {
 
     private final ConsultationRequestRepository consultationRequestRepository;
 
-    public ConsultationRequest saveRequest(Long chatId, String personType, String creditType) {
+    public void saveRequest(Long chatId, String personType, String creditType) {
         ConsultationRequest request = new ConsultationRequest();
         request.setChatId(chatId);
         request.setPersonType(personType);
         request.setCreditType(creditType);
         request.setCreatedAt(LocalDateTime.now());
-        return consultationRequestRepository.save(request);
+        consultationRequestRepository.save(request);
     }
 }

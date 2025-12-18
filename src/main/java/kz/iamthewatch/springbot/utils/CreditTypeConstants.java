@@ -9,4 +9,3 @@ public class CreditTypeConstants {
     public static final String CREDIT_AUTO = "credit_auto";
     public static final String CREDIT_OTHER = "credit_other";
 }
-

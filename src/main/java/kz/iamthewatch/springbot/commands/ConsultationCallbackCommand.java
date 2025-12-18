@@ -92,4 +92,3 @@ public class ConsultationCallbackCommand implements Command {
                 .build();
     }
 }
-

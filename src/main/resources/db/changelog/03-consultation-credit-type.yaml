@@ -55,3 +55,4 @@ databaseChangeLog:
             tableName: consultation_request
             columnName: credit_type
 
+
