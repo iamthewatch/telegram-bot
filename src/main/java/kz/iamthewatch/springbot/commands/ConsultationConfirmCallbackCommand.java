@@ -2,8 +2,15 @@ package kz.iamthewatch.springbot.commands;
 
 import static kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_NO;
 import static kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_YES;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getCallbackData;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getFirstname;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getLastname;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getUsername;
 
 import java.util.Set;
+
+import kz.iamthewatch.springbot.dto.ConsultationDto;
 import kz.iamthewatch.springbot.enums.CommandName;
 import kz.iamthewatch.springbot.events.MessageEvent;
 import kz.iamthewatch.springbot.service.ConsultationRequestService;
@@ -35,20 +42,18 @@ public class ConsultationConfirmCallbackCommand implements Command {
         if (!update.hasCallbackQuery()) {
             return false;
         }
-        return SUPPORTED.contains(update.getCallbackQuery().getData());
+        return SUPPORTED.contains(getCallbackData(update));
     }
 
     @Override
     public void handle(Update update) {
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        String data = update.getCallbackQuery().getData();
+        Long chatId = getChatId(update);
+        String data = getCallbackData(update);
         messageTrackerService.deleteLastMessage(chatId);
 
         if (CONFIRM_YES.equals(data)) {
-            String personType = userSessionService.getConsultationPersonType(chatId);
-            String creditType = userSessionService.getConsultationCreditType(chatId);
-            consultationRequestService.saveRequest(chatId, personType == null ? "unknown" : personType, creditType == null ? "unknown" : creditType);
-            userSessionService.clearConsultationFlow(chatId);
+
+            consultationRequestService.saveRequest(createConsultationDto(chatId, update));
 
             SendMessage message = SendMessage
                     .builder()
@@ -60,7 +65,6 @@ public class ConsultationConfirmCallbackCommand implements Command {
             return;
         }
 
-        userSessionService.clearConsultationFlow(chatId);
         SendMessage message = SendMessage
                 .builder()
                 .chatId(chatId)
@@ -73,5 +77,16 @@ public class ConsultationConfirmCallbackCommand implements Command {
     @Override
     public String getCommand() {
         return CommandName.CONSULTATION_REQUEST.name();
+    }
+
+    private ConsultationDto createConsultationDto(Long chatId, Update update) {
+        return new ConsultationDto(
+                chatId,
+                getUsername(update),
+                getFirstname(update),
+                getLastname(update),
+                userSessionService.getConsultationPersonType(chatId),
+                userSessionService.getConsultationCreditType(chatId)
+        );
     }
 }

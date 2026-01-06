@@ -9,17 +9,10 @@ databaseChangeLog:
               - column:
                   name: consultation_person_type
                   type: VARCHAR(50)
-              - column:
-                  name: awaiting_consultation_client_type
-                  type: BOOLEAN
-                  defaultValueBoolean: false
       rollback:
         - dropColumn:
             tableName: user_session
             columnName: consultation_person_type
-        - dropColumn:
-            tableName: user_session
-            columnName: awaiting_consultation_client_type
 
   - changeSet:
       id: create-consultation-request
@@ -42,6 +35,7 @@ databaseChangeLog:
               - column:
                   name: person_type
                   type: VARCHAR(50)
+                  defaultValue: unknown
                   constraints:
                     nullable: false
               - column:

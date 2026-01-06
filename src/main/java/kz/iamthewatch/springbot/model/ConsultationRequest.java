@@ -24,12 +24,21 @@ public class ConsultationRequest {
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
 
-    @Column(name = "person_type", nullable = false)
-    private String personType;
-
-    @Column(name = "credit_type", nullable = false)
-    private String creditType;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "firstname")
+    private String firstname;
+
+    @Column(name = "lastname")
+    private String lastname;
+
+    @Column(name = "person_type")
+    private String personType;
+
+    @Column(name = "credit_type")
+    private String creditType;
 }

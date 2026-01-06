@@ -9,27 +9,13 @@ databaseChangeLog:
               - column:
                   name: consultation_credit_type
                   type: VARCHAR(50)
-              - column:
-                  name: awaiting_consultation_credit_type
-                  type: BOOLEAN
-                  defaultValueBoolean: false
-              - column:
-                  name: awaiting_consultation_confirmation
-                  type: BOOLEAN
-                  defaultValueBoolean: false
       rollback:
         - dropColumn:
             tableName: user_session
             columnName: consultation_credit_type
-        - dropColumn:
-            tableName: user_session
-            columnName: awaiting_consultation_credit_type
-        - dropColumn:
-            tableName: user_session
-            columnName: awaiting_consultation_confirmation
 
   - changeSet:
-      id: add-credit-type-column
+      id: add-credit-type-columns
       author: iamthewatch
       changes:
         - addColumn:
@@ -41,9 +27,26 @@ databaseChangeLog:
                   defaultValue: unknown
                   constraints:
                     nullable: false
+
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  defaultValue: unknown
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: firstname
+                  type: VARCHAR(255)
+
+              - column:
+                  name: lastname
+                  type: VARCHAR(255)
+
         - dropColumn:
             tableName: consultation_request
             columnName: client_type
+
       rollback:
         - addColumn:
             tableName: consultation_request
@@ -51,8 +54,19 @@ databaseChangeLog:
               - column:
                   name: client_type
                   type: VARCHAR(255)
+
         - dropColumn:
             tableName: consultation_request
             columnName: credit_type
 
+        - dropColumn:
+            tableName: consultation_request
+            columnName: username
 
+        - dropColumn:
+            tableName: consultation_request
+            columnName: firstname
+
+        - dropColumn:
+            tableName: consultation_request
+            columnName: lastname

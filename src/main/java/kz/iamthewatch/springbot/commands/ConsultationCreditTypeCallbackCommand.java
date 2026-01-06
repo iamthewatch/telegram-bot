@@ -51,7 +51,7 @@ public class ConsultationCreditTypeCallbackCommand implements Command {
         String creditType = update.getCallbackQuery().getData();
 
         messageTrackerService.deleteLastMessage(chatId);
-        userSessionService.selectCreditType(chatId, creditType);
+        userSessionService.setConsultationCreditType(chatId, creditType);
 
         String personType = userSessionService.getConsultationPersonType(chatId);
         String personLabel = PERSON_FL.equals(personType)

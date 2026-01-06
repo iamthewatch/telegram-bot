@@ -50,7 +50,7 @@ public class ConsultationCallbackCommand implements Command {
         String personType = update.getCallbackQuery().getData();
 
         messageTrackerService.deleteLastMessage(chatId);
-        userSessionService.startConsultationFlow(chatId, personType);
+        userSessionService.setConsultationPersonType(chatId, personType);
 
         SendMessage message = SendMessage
                 .builder()
