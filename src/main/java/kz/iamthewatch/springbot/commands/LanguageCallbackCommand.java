@@ -1,68 +1,54 @@
 package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
-import kz.iamthewatch.springbot.events.MessageEvent;
-import kz.iamthewatch.springbot.service.KeyboardService;
-import kz.iamthewatch.springbot.service.LocalizationService;
-import kz.iamthewatch.springbot.service.MessageTrackerService;
-import kz.iamthewatch.springbot.service.UserSessionService;
+import kz.iamthewatch.springbot.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_KZ;
 import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_RU;
+import static kz.iamthewatch.springbot.utils.MessageConstants.LANGUAGE_SWITCHED;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getCallbackData;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
 
 @Component
 @RequiredArgsConstructor
 public class LanguageCallbackCommand implements Command {
 
     private final MessageTrackerService messageTrackerService;
-    private final ApplicationEventPublisher eventPublisher;
     private final LocalizationService localizationService;
     private final UserSessionService userSessionService;
     private final KeyboardService keyboardService;
+    private final MessageService messageService;
 
     @Override
     public boolean canHandle(Update update) {
         if (!update.hasCallbackQuery()) {
             return false;
         }
-        String callbackData = update.getCallbackQuery().getData();
+        String callbackData = getCallbackData(update);
         return callbackData.equals(LANG_RU)
                 || callbackData.equals(LANG_KZ);
     }
 
     @Override
     public void handle(Update update) {
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        String callbackData = update.getCallbackQuery().getData();
+        Long chatId = getChatId(update);
+        String callbackData = getCallbackData(update);
         messageTrackerService.deleteLastMessage(chatId);
 
         if (callbackData.equals(LANG_RU)) {
             userSessionService.setLocale(chatId, "ru");
-            String switched = localizationService.getLocalizedMessage(chatId, "language.switched");
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chatId)
-                    .replyMarkup(keyboardService.getMainMenuKeyboard(chatId))
-                    .text(switched)
-                    .build();
-            eventPublisher.publishEvent(new MessageEvent(this, message));
         }
         else if (callbackData.equals(LANG_KZ)) {
             userSessionService.setLocale(chatId, "kk");
-            String switched = localizationService.getLocalizedMessage(chatId, "language.switched");
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chatId)
-                    .replyMarkup(keyboardService.getMainMenuKeyboard(chatId))
-                    .text(switched)
-                    .build();
-            eventPublisher.publishEvent(new MessageEvent(this, message));
         }
+
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, LANGUAGE_SWITCHED);
+        ReplyKeyboard localizedKeyboard = keyboardService.getMainMenuKeyboard(chatId);
+        messageService.sendMessage(chatId, localizedMessage, localizedKeyboard);
     }
 
     @Override

@@ -7,11 +7,17 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public final class UpdateUtils {
 
     public static Long getChatId(Update update) {
-        return update.getCallbackQuery().getMessage().getChatId();
+        return update.hasMessage()
+                ? update.getMessage().getChatId()
+                : update.getCallbackQuery().getMessage().getChatId();
     }
 
     public static String getCallbackData(Update update) {
         return update.getCallbackQuery().getData();
+    }
+
+    public static String getMessageText(Update update) {
+        return update.getMessage().getText();
     }
 
     public static String getUsername(Update update) {

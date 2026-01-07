@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.List;
 
+import static kz.iamthewatch.springbot.utils.MessageConstants.*;
 import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_FL;
 import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_UL;
 
@@ -32,7 +33,7 @@ public class ConsultationCommand implements Command {
             return false;
         }
         Long chatId = update.getMessage().getChatId();
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.consultation.request");
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_CONSULTATION_REQUEST);
         return update.getMessage().getText().equals(localizedMessage);
     }
 
@@ -41,7 +42,7 @@ public class ConsultationCommand implements Command {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             Long chatId = update.getMessage().getChatId();
-            String localizedMessage = localizationService.getLocalizedMessage(chatId, "person.type.select");
+            String localizedMessage = localizationService.getLocalizedMessage(chatId, PERSON_TYPE_SELECT);
 
             SendMessage message = SendMessage
                     .builder()
@@ -62,13 +63,13 @@ public class ConsultationCommand implements Command {
     private ReplyKeyboard getPersonTypeKeyboard(Long chatId) {
         List<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "person.type.fl"))
+                .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_FL))
                 .callbackData(PERSON_FL)
                 .build()
         ));
 
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "person.type.ul"))
+                .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_UL))
                 .callbackData(PERSON_UL)
                 .build()
         ));

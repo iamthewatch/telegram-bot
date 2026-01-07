@@ -1,29 +1,25 @@
 package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
-import kz.iamthewatch.springbot.events.MessageEvent;
+import kz.iamthewatch.springbot.service.KeyboardService;
 import kz.iamthewatch.springbot.service.LocalizationService;
+import kz.iamthewatch.springbot.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_KZ;
-import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_RU;
+import static kz.iamthewatch.springbot.utils.MessageConstants.LANGUAGE_SELECT;
+import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_LANGUAGE;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 
 @Component
 @RequiredArgsConstructor
 public class LanguageCommand implements Command {
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final MessageService messageService;
+    private final KeyboardService keyboardService;
     private final LocalizationService localizationService;
 
     @Override
@@ -31,51 +27,21 @@ public class LanguageCommand implements Command {
         if (!update.hasMessage() || !update.getMessage().hasText()) {
             return false;
         }
-        Long chatId = update.getMessage().getChatId();
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.language");
-        return update.getMessage().getText().equals(localizedMessage);
+        Long chatId = getChatId(update);
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_LANGUAGE);
+        return getMessageText(update).equals(localizedMessage);
     }
 
     @Override
     public void handle(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-
-            Long chatId = update.getMessage().getChatId();
-            String localizedMessage = localizationService.getLocalizedMessage(chatId, "language.select");
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chatId)
-                    .text(localizedMessage)
-                    .replyMarkup(getLanguageKeyboard(chatId))
-                    .build();
-
-            eventPublisher.publishEvent(new MessageEvent(this, message));
-        }
+        Long chatId = getChatId(update);
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, LANGUAGE_SELECT);
+        ReplyKeyboard replyKeyboardMarkup = keyboardService.getLanguageKeyboard(chatId);
+        messageService.sendMessage(chatId, localizedMessage, replyKeyboardMarkup);
     }
 
     @Override
     public String getCommand() {
         return CommandName.LANGUAGE.name();
-    }
-
-    private ReplyKeyboard getLanguageKeyboard(Long chatId) {
-        List<InlineKeyboardRow> rows = new ArrayList<>();
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "language.ru"))
-                .callbackData(LANG_RU)
-                .build()
-        ));
-
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "language.kk"))
-                .callbackData(LANG_KZ)
-                .build()
-        ));
-
-        return InlineKeyboardMarkup
-                .builder()
-                .keyboard(rows)
-                .build();
     }
 }

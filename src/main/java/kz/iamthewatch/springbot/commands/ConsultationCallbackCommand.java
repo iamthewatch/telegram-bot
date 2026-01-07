@@ -1,5 +1,6 @@
 package kz.iamthewatch.springbot.commands;
 
+import static kz.iamthewatch.springbot.utils.MessageConstants.CONSULTATION_CREDIT_TYPE_SELECT;
 import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_FL;
 import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_UL;
 
@@ -25,6 +26,8 @@ import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_AUTO;
 import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_CONSUMER;
 import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_MORTGAGE;
 import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_OTHER;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getCallbackData;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
 
 @Component
 @RequiredArgsConstructor
@@ -40,14 +43,14 @@ public class ConsultationCallbackCommand implements Command {
         if (!update.hasCallbackQuery()) {
             return false;
         }
-        String callbackData = update.getCallbackQuery().getData();
+        String callbackData = getCallbackData(update);
         return PERSON_FL.equals(callbackData) || PERSON_UL.equals(callbackData);
     }
 
     @Override
     public void handle(Update update) {
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        String personType = update.getCallbackQuery().getData();
+        Long chatId = getChatId(update);
+        String personType = getCallbackData(update);
 
         messageTrackerService.deleteLastMessage(chatId);
         userSessionService.setConsultationPersonType(chatId, personType);
@@ -55,7 +58,7 @@ public class ConsultationCallbackCommand implements Command {
         SendMessage message = SendMessage
                 .builder()
                 .chatId(chatId)
-                .text(localizationService.getLocalizedMessage(chatId, "consultation.credit.type.select"))
+                .text(localizationService.getLocalizedMessage(chatId, CONSULTATION_CREDIT_TYPE_SELECT))
                 .replyMarkup(getCreditTypeKeyboard(chatId))
                 .build();
 

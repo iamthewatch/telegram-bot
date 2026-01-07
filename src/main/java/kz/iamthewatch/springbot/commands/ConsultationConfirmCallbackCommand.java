@@ -2,6 +2,8 @@ package kz.iamthewatch.springbot.commands;
 
 import static kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_NO;
 import static kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_YES;
+import static kz.iamthewatch.springbot.utils.MessageConstants.CONSULTATION_REQUEST_ACCEPTED;
+import static kz.iamthewatch.springbot.utils.MessageConstants.CONSULTATION_RESTART;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getCallbackData;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getFirstname;
@@ -58,7 +60,7 @@ public class ConsultationConfirmCallbackCommand implements Command {
             SendMessage message = SendMessage
                     .builder()
                     .chatId(chatId)
-                    .text(localizationService.getLocalizedMessage(chatId, "consultation.request.accepted"))
+                    .text(localizationService.getLocalizedMessage(chatId, CONSULTATION_REQUEST_ACCEPTED))
                     .replyMarkup(keyboardService.getMainMenuKeyboard(chatId))
                     .build();
             eventPublisher.publishEvent(new MessageEvent(this, message));
@@ -68,7 +70,7 @@ public class ConsultationConfirmCallbackCommand implements Command {
         SendMessage message = SendMessage
                 .builder()
                 .chatId(chatId)
-                .text(localizationService.getLocalizedMessage(chatId, "consultation.restart"))
+                .text(localizationService.getLocalizedMessage(chatId, CONSULTATION_RESTART))
                 .replyMarkup(keyboardService.getMainMenuKeyboard(chatId))
                 .build();
         eventPublisher.publishEvent(new MessageEvent(this, message));

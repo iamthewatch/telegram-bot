@@ -1,20 +1,24 @@
 package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
-import kz.iamthewatch.springbot.events.MessageEvent;
 import kz.iamthewatch.springbot.service.KeyboardService;
 import kz.iamthewatch.springbot.service.LocalizationService;
+import kz.iamthewatch.springbot.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+
+import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_START;
+import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_WELCOME;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 
 @Component
 @RequiredArgsConstructor
 public class StartCommand implements Command {
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final MessageService messageService;
     private final LocalizationService localizationService;
     private final KeyboardService keyboardService;
 
@@ -23,27 +27,17 @@ public class StartCommand implements Command {
         if (!update.hasMessage() || !update.getMessage().hasText()) {
             return false;
         }
-        Long chatId = update.getMessage().getChatId();
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.start");
-        return update.getMessage().getText().equals(localizedMessage);
+        Long chatId = getChatId(update);
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_START);
+        return getMessageText(update).equals(localizedMessage);
     }
 
     @Override
     public void handle(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-
-            Long chatId = update.getMessage().getChatId();
-            String localizedMessage = localizationService.getLocalizedMessage(chatId, "menu.welcome");
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chatId)
-                    .text(localizedMessage)
-                    .replyMarkup(keyboardService.getMainMenuKeyboard(chatId))
-                    .build();
-
-            eventPublisher.publishEvent(new MessageEvent(this, message));
-        }
+        Long chatId = getChatId(update);
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_WELCOME);
+        ReplyKeyboard localizedKeyboard = keyboardService.getMainMenuKeyboard(chatId);
+        messageService.sendMessage(chatId, localizedMessage, localizedKeyboard);
     }
 
     @Override
