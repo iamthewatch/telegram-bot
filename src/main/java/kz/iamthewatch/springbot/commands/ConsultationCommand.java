@@ -1,82 +1,48 @@
 package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
-import kz.iamthewatch.springbot.events.MessageEvent;
+import kz.iamthewatch.springbot.service.KeyboardService;
 import kz.iamthewatch.springbot.service.LocalizationService;
+import kz.iamthewatch.springbot.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static kz.iamthewatch.springbot.utils.MessageConstants.*;
-import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_FL;
-import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_UL;
+import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_CONSULTATION_REQUEST;
+import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_SELECT;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
+import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 
 @Component
 @RequiredArgsConstructor
 public class ConsultationCommand implements Command {
 
-    private final ApplicationEventPublisher eventPublisher;
+
     private final LocalizationService localizationService;
+    private final KeyboardService keyboardService;
+    private final MessageService messageService;
 
     @Override
     public boolean canHandle(Update update) {
         if (!update.hasMessage() || !update.getMessage().hasText()) {
             return false;
         }
-        Long chatId = update.getMessage().getChatId();
+        Long chatId = getChatId(update);
         String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_CONSULTATION_REQUEST);
-        return update.getMessage().getText().equals(localizedMessage);
+        return getMessageText(update).equals(localizedMessage);
     }
 
     @Override
     public void handle(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-
-            Long chatId = update.getMessage().getChatId();
-            String localizedMessage = localizationService.getLocalizedMessage(chatId, PERSON_TYPE_SELECT);
-
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(chatId)
-                    .text(localizedMessage)
-                    .replyMarkup(getPersonTypeKeyboard(chatId))
-                    .build();
-
-            eventPublisher.publishEvent(new MessageEvent(this, message));
-        }
+        Long chatId = getChatId(update);
+        String localizedMessage = localizationService.getLocalizedMessage(chatId, PERSON_TYPE_SELECT);
+        ReplyKeyboard replyKeyboard = keyboardService.getPersonTypeKeyboard(chatId);
+        messageService.sendMessage(chatId, localizedMessage, replyKeyboard);
     }
 
     @Override
     public String getCommand() {
         return CommandName.CONSULTATION_REQUEST.name();
-    }
-
-    private ReplyKeyboard getPersonTypeKeyboard(Long chatId) {
-        List<InlineKeyboardRow> rows = new ArrayList<>();
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_FL))
-                .callbackData(PERSON_FL)
-                .build()
-        ));
-
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_UL))
-                .callbackData(PERSON_UL)
-                .build()
-        ));
-
-        return InlineKeyboardMarkup
-                .builder()
-                .keyboard(rows)
-                .build();
     }
 }

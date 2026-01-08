@@ -12,8 +12,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
+import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_AUTO;
+import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_CONSUMER;
+import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_MORTGAGE;
+import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_OTHER;
 import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_KZ;
 import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_RU;
+import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_FL;
+import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_UL;
+import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_FL;
+import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_UL;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +84,51 @@ public class KeyboardService {
         return InlineKeyboardMarkup
                 .builder()
                 .keyboardRow(row)
+                .build();
+    }
+
+    public ReplyKeyboard getPersonTypeKeyboard(Long chatId) {
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_FL))
+                .callbackData(PERSON_FL)
+                .build()
+        ));
+
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_UL))
+                .callbackData(PERSON_UL)
+                .build()
+        ));
+
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboard(rows)
+                .build();
+    }
+
+    public ReplyKeyboard getCreditTypeKeyboard(Long chatId) {
+        List<InlineKeyboardRow> rows = new ArrayList<>();
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(localizationService.getLocalizedMessage(chatId, "credit.type.consumer"))
+                .callbackData(CREDIT_CONSUMER)
+                .build()));
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(localizationService.getLocalizedMessage(chatId, "credit.type.mortgage"))
+                .callbackData(CREDIT_MORTGAGE)
+                .build()));
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(localizationService.getLocalizedMessage(chatId, "credit.type.auto"))
+                .callbackData(CREDIT_AUTO)
+                .build()));
+        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                .text(localizationService.getLocalizedMessage(chatId, "credit.type.other"))
+                .callbackData(CREDIT_OTHER)
+                .build()));
+
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboard(rows)
                 .build();
     }
 }

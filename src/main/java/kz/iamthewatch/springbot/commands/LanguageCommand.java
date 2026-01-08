@@ -36,8 +36,8 @@ public class LanguageCommand implements Command {
     public void handle(Update update) {
         Long chatId = getChatId(update);
         String localizedMessage = localizationService.getLocalizedMessage(chatId, LANGUAGE_SELECT);
-        ReplyKeyboard replyKeyboardMarkup = keyboardService.getLanguageKeyboard(chatId);
-        messageService.sendMessage(chatId, localizedMessage, replyKeyboardMarkup);
+        ReplyKeyboard replyKeyboard = keyboardService.getLanguageKeyboard(chatId);
+        messageService.sendMessage(chatId, localizedMessage, replyKeyboard);
     }
 
     @Override
