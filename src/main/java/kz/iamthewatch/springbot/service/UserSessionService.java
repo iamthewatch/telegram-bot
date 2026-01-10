@@ -1,5 +1,6 @@
 package kz.iamthewatch.springbot.service;
 
+import kz.iamthewatch.springbot.enums.LanguageCode;
 import kz.iamthewatch.springbot.model.UserSession;
 import kz.iamthewatch.springbot.repository.UserSessionRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,9 @@ public class UserSessionService {
     }
 
     @Transactional
-    public void setLocale(Long chatId, String locale) {
+    public void setLocale(Long chatId, LanguageCode locale) {
         UserSession userSession = getOrCreateUserSession(chatId);
-        userSession.setLocale(locale);
+        userSession.setLocale(locale.getLocale());
         userSessionRepository.save(userSession);
     }
 
@@ -57,7 +58,7 @@ public class UserSessionService {
         return userSession.orElseGet(() -> {
             UserSession newUserSession = new UserSession();
             newUserSession.setChatId(chatId);
-            newUserSession.setLocale("ru");
+            newUserSession.setLocale(LanguageCode.LANG_RU.getLocale());
             return userSessionRepository.save(newUserSession);
         });
     }

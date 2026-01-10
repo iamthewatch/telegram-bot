@@ -18,7 +18,6 @@ import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 @RequiredArgsConstructor
 public class ConsultationCommand implements Command {
 
-
     private final LocalizationService localizationService;
     private final KeyboardService keyboardService;
     private final MessageService messageService;

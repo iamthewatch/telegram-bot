@@ -1,5 +1,6 @@
 package kz.iamthewatch.springbot.service;
 
+import kz.iamthewatch.springbot.enums.LanguageCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,8 +17,6 @@ import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_AUTO;
 import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_CONSUMER;
 import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_MORTGAGE;
 import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_OTHER;
-import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_KZ;
-import static kz.iamthewatch.springbot.utils.LanguageConstants.LANG_RU;
 import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_FL;
 import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_UL;
 import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_FL;
@@ -53,13 +52,13 @@ public class KeyboardService {
         List<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(localizationService.getLocalizedMessage(chatId, "language.ru"))
-                .callbackData(LANG_RU)
+                .callbackData(LanguageCode.LANG_RU.getCallbackCode())
                 .build()
         ));
 
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(localizationService.getLocalizedMessage(chatId, "language.kk"))
-                .callbackData(LANG_KZ)
+                .callbackData(LanguageCode.LANG_KZ.getCallbackCode())
                 .build()
         ));
 
