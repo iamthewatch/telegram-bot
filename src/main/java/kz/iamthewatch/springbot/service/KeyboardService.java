@@ -1,6 +1,7 @@
 package kz.iamthewatch.springbot.service;
 
-import kz.iamthewatch.springbot.enums.LanguageCode;
+import kz.iamthewatch.springbot.enums.Language;
+import kz.iamthewatch.springbot.enums.PersonType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -19,8 +20,6 @@ import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_MORTGAGE
 import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_OTHER;
 import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_FL;
 import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_UL;
-import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_FL;
-import static kz.iamthewatch.springbot.utils.PersonTypeConstants.PERSON_UL;
 
 @Service
 @RequiredArgsConstructor
@@ -52,13 +51,13 @@ public class KeyboardService {
         List<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(localizationService.getLocalizedMessage(chatId, "language.ru"))
-                .callbackData(LanguageCode.LANG_RU.getCallbackCode())
+                .callbackData(Language.LANG_RU.getCallbackCode())
                 .build()
         ));
 
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(localizationService.getLocalizedMessage(chatId, "language.kk"))
-                .callbackData(LanguageCode.LANG_KZ.getCallbackCode())
+                .callbackData(Language.LANG_KZ.getCallbackCode())
                 .build()
         ));
 
@@ -90,13 +89,13 @@ public class KeyboardService {
         List<InlineKeyboardRow> rows = new ArrayList<>();
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_FL))
-                .callbackData(PERSON_FL)
+                .callbackData(PersonType.PERSON_FL.getCode())
                 .build()
         ));
 
         rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
                 .text(localizationService.getLocalizedMessage(chatId, PERSON_TYPE_UL))
-                .callbackData(PERSON_UL)
+                .callbackData(PersonType.PERSON_FL.getCode())
                 .build()
         ));
 

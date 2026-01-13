@@ -1,7 +1,7 @@
 package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
-import kz.iamthewatch.springbot.enums.LanguageCode;
+import kz.iamthewatch.springbot.enums.Language;
 import kz.iamthewatch.springbot.service.KeyboardService;
 import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
@@ -32,14 +32,14 @@ public class LanguageCallbackCommand implements Command {
             return false;
         }
         String callbackData = getCallbackData(update);
-        return LanguageCode.isLanguageCommand(callbackData);
+        return Language.isLanguageCommand(callbackData);
     }
 
     @Override
     public void handle(Update update) {
         Long chatId = getChatId(update);
         String callbackData = getCallbackData(update);
-        LanguageCode.tryFromCallback(callbackData)
+        Language.tryFromCallback(callbackData)
                 .ifPresent(language -> processLanguageChange(chatId, language));
     }
 
@@ -48,7 +48,7 @@ public class LanguageCallbackCommand implements Command {
         return CommandName.LANGUAGE.name();
     }
 
-    private void processLanguageChange(Long chatId, LanguageCode language) {
+    private void processLanguageChange(Long chatId, Language language) {
         messageTrackerService.deleteLastMessage(chatId);
         userSessionService.setLocale(chatId, language);
 

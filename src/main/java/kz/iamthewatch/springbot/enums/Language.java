@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
-public enum LanguageCode {
+public enum Language {
     LANG_RU("lang_ru", "ru"),
     LANG_KZ("lang_kk", "kk");
 
@@ -22,14 +22,14 @@ public enum LanguageCode {
         return BY_CALLBACK.containsKey(callbackData);
     }
 
-    public static Optional<LanguageCode> tryFromCallback(String callbackData) {
+    public static Optional<Language> tryFromCallback(String callbackData) {
         return Optional.ofNullable(BY_CALLBACK.get(callbackData));
     }
 
-    private static final Map<String, LanguageCode> BY_CALLBACK =
+    private static final Map<String, Language> BY_CALLBACK =
             Arrays.stream(values())
                     .collect(Collectors.toMap(
-                            LanguageCode::getCallbackCode,
+                            Language::getCallbackCode,
                             Function.identity()
                     ));
 }
