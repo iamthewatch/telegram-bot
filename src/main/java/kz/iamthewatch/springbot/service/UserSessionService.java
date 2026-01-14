@@ -1,5 +1,6 @@
 package kz.iamthewatch.springbot.service;
 
+import kz.iamthewatch.springbot.enums.CreditType;
 import kz.iamthewatch.springbot.enums.Language;
 import kz.iamthewatch.springbot.enums.PersonType;
 import kz.iamthewatch.springbot.model.UserSession;
@@ -47,9 +48,9 @@ public class UserSessionService {
     }
 
     @Transactional
-    public void setConsultationCreditType(Long chatId, String creditType) {
+    public void setConsultationCreditType(Long chatId, CreditType creditType) {
         UserSession userSession = getOrCreateUserSession(chatId);
-        userSession.setConsultationCreditType(creditType);
+        userSession.setConsultationCreditType(creditType.getCallbackCode());
         userSessionRepository.save(userSession);
     }
 

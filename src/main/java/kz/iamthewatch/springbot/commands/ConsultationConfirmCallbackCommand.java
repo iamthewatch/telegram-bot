@@ -1,7 +1,5 @@
 package kz.iamthewatch.springbot.commands;
 
-import static kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_NO;
-import static kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_YES;
 import static kz.iamthewatch.springbot.utils.MessageConstants.CONSULTATION_REQUEST_ACCEPTED;
 import static kz.iamthewatch.springbot.utils.MessageConstants.CONSULTATION_RESTART;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getCallbackData;
@@ -10,10 +8,9 @@ import static kz.iamthewatch.springbot.utils.UpdateUtils.getFirstname;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getLastname;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getUsername;
 
-import java.util.Set;
-
 import kz.iamthewatch.springbot.dto.ConsultationDto;
 import kz.iamthewatch.springbot.enums.CommandName;
+import kz.iamthewatch.springbot.enums.ConfirmationStatus;
 import kz.iamthewatch.springbot.service.ConsultationRequestService;
 import kz.iamthewatch.springbot.service.KeyboardService;
 import kz.iamthewatch.springbot.service.LocalizationService;
@@ -29,8 +26,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 @RequiredArgsConstructor
 public class ConsultationConfirmCallbackCommand implements Command {
 
-    private static final Set<String> SUPPORTED = Set.of(CONFIRM_YES, CONFIRM_NO);
-
     private final UserSessionService userSessionService;
     private final ConsultationRequestService consultationRequestService;
     private final MessageTrackerService messageTrackerService;
@@ -43,31 +38,45 @@ public class ConsultationConfirmCallbackCommand implements Command {
         if (!update.hasCallbackQuery()) {
             return false;
         }
-        return SUPPORTED.contains(getCallbackData(update));
+        return ConfirmationStatus.isCallbackCommand(getCallbackData(update));
     }
 
     @Override
     public void handle(Update update) {
         Long chatId = getChatId(update);
-        String data = getCallbackData(update);
+        String callbackData = getCallbackData(update);
         messageTrackerService.deleteLastMessage(chatId);
 
         ReplyKeyboard localizedKeyboard = keyboardService.getMainMenuKeyboard(chatId);
 
-        if (CONFIRM_YES.equals(data)) {
-            consultationRequestService.saveRequest(createConsultationDto(chatId, update));
-            String localizedMessage = localizationService.getLocalizedMessage(chatId, CONSULTATION_REQUEST_ACCEPTED);
-            messageService.sendMessage(chatId, localizedMessage,  localizedKeyboard);
-            return;
-        }
-
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, CONSULTATION_RESTART);
-        messageService.sendMessage(chatId, localizedMessage,  localizedKeyboard);
+        ConfirmationStatus.tryFromCallback(callbackData).ifPresent(action -> {
+            switch (action) {
+                case ACCEPTED -> handleAcceptedCallback(chatId, update, localizedKeyboard);
+                case REJECTED  -> handleRejectedCallback(chatId, localizedKeyboard);
+            }
+        });
     }
 
     @Override
     public String getCommand() {
         return CommandName.CONSULTATION_REQUEST.name();
+    }
+
+    private void handleAcceptedCallback(Long chatId, Update update, ReplyKeyboard keyboard) {
+        consultationRequestService.saveRequest(createConsultationDto(chatId, update));
+        messageService.sendMessage(
+                chatId,
+                localizationService.getLocalizedMessage(chatId, CONSULTATION_REQUEST_ACCEPTED),
+                keyboard
+        );
+    }
+
+    private void handleRejectedCallback(Long chatId, ReplyKeyboard keyboard) {
+        messageService.sendMessage(
+                chatId,
+                localizationService.getLocalizedMessage(chatId, CONSULTATION_RESTART),
+                keyboard
+        );
     }
 
     private ConsultationDto createConsultationDto(Long chatId, Update update) {

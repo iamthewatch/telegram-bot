@@ -9,15 +9,19 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_FL;
+import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_UL;
+
 @Getter
 @AllArgsConstructor
 public enum PersonType {
-    PERSON_FL("person_fl"),
-    PERSON_UL("person_ul");
+    PERSON_FL("person_fl", PERSON_TYPE_FL),
+    PERSON_UL("person_ul", PERSON_TYPE_UL);
 
     private final String code;
+    private final String messageKey;
 
-    public static boolean isPersonTypeCommand(String code) {
+    public static boolean isCallbackCommand(String code) {
         return BY_CALLBACK.containsKey(code);
     }
 

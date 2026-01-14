@@ -1,5 +1,7 @@
 package kz.iamthewatch.springbot.service;
 
+import kz.iamthewatch.springbot.enums.ConfirmationStatus;
+import kz.iamthewatch.springbot.enums.CreditType;
 import kz.iamthewatch.springbot.enums.Language;
 import kz.iamthewatch.springbot.enums.PersonType;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +15,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_AUTO;
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_CONSUMER;
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_MORTGAGE;
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_OTHER;
 import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_FL;
 import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_UL;
 
@@ -71,11 +70,11 @@ public class KeyboardService {
         InlineKeyboardRow row = new InlineKeyboardRow(
                 InlineKeyboardButton.builder()
                         .text(localizationService.getLocalizedMessage(chatId, "consultation.confirm.yes"))
-                        .callbackData(kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_YES)
+                        .callbackData(ConfirmationStatus.ACCEPTED.getCallbackCode())
                         .build(),
                 InlineKeyboardButton.builder()
                         .text(localizationService.getLocalizedMessage(chatId, "consultation.confirm.no"))
-                        .callbackData(kz.iamthewatch.springbot.utils.ConfirmationConstants.CONFIRM_NO)
+                        .callbackData(ConfirmationStatus.REJECTED.getCallbackCode())
                         .build()
         );
 
@@ -105,24 +104,19 @@ public class KeyboardService {
                 .build();
     }
 
-    public ReplyKeyboard getCreditTypeKeyboard(Long chatId) {
-        List<InlineKeyboardRow> rows = new ArrayList<>();
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "credit.type.consumer"))
-                .callbackData(CREDIT_CONSUMER)
-                .build()));
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "credit.type.mortgage"))
-                .callbackData(CREDIT_MORTGAGE)
-                .build()));
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "credit.type.auto"))
-                .callbackData(CREDIT_AUTO)
-                .build()));
-        rows.add(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                .text(localizationService.getLocalizedMessage(chatId, "credit.type.other"))
-                .callbackData(CREDIT_OTHER)
-                .build()));
+    public ReplyKeyboard getCreditTypeKeyboardByPersonType(Long chatId, PersonType personType) {
+        Set<CreditType> creditTypes = CreditType.getAllByPersonType(personType);
+
+        List<InlineKeyboardRow> rows = creditTypes.stream()
+                        .map(creditType ->
+                                new InlineKeyboardRow(
+                                        InlineKeyboardButton.builder()
+                                                .text(localizationService.getLocalizedMessage(chatId, creditType.getMessageKey()))
+                                                .callbackData(creditType.getCallbackCode())
+                                                .build()
+                                )
+                        )
+                        .toList();
 
         return InlineKeyboardMarkup
                 .builder()

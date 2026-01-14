@@ -1,19 +1,11 @@
 package kz.iamthewatch.springbot.commands;
 
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_AUTO;
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_CONSUMER;
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_MORTGAGE;
-import static kz.iamthewatch.springbot.utils.CreditTypeConstants.CREDIT_OTHER;
 import static kz.iamthewatch.springbot.utils.MessageConstants.CONSULTATION_CONFIRM;
-import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_FL;
-import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_UL;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getCallbackData;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import kz.iamthewatch.springbot.enums.CommandName;
+import kz.iamthewatch.springbot.enums.CreditType;
 import kz.iamthewatch.springbot.enums.PersonType;
 import kz.iamthewatch.springbot.service.*;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +16,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 @Component
 @RequiredArgsConstructor
 public class ConsultationCreditTypeCallbackCommand implements Command {
-
-    private static final Set<String> SUPPORTED = new HashSet<>(Arrays.asList(
-            CREDIT_CONSUMER, CREDIT_MORTGAGE, CREDIT_AUTO, CREDIT_OTHER
-    ));
 
     private final UserSessionService userSessionService;
     private final MessageTrackerService messageTrackerService;
@@ -40,26 +28,29 @@ public class ConsultationCreditTypeCallbackCommand implements Command {
         if (!update.hasCallbackQuery()) {
             return false;
         }
-        return SUPPORTED.contains(getCallbackData(update));
+        return CreditType.isCallbackCommand(getCallbackData(update));
     }
 
     @Override
     public void handle(Update update) {
         Long chatId = getChatId(update);
-        String creditType = getCallbackData(update);
+        String callbackData = getCallbackData(update);
         String personTypeCode = userSessionService.getConsultationPersonType(chatId);
-
-        messageTrackerService.deleteLastMessage(chatId);
-        userSessionService.setConsultationCreditType(chatId, creditType);
 
         PersonType personType = PersonType.tryFromCallback(personTypeCode)
                 .orElse(PersonType.PERSON_FL);
 
+        CreditType creditType = CreditType.tryFromCallback(callbackData)
+                .orElse(CreditType.OTHER);
+
+        messageTrackerService.deleteLastMessage(chatId);
+        userSessionService.setConsultationCreditType(chatId, creditType);
+
         String localizedMessage = localizationService.getLocalizedMessage(
                 chatId,
                 CONSULTATION_CONFIRM,
-                getLocalizedMessageByPersonType(chatId, personType),
-                getLocalizedMessageByCreditType(chatId, creditType)
+                localizationService.getLocalizedMessage(chatId, personType.getMessageKey()),
+                localizationService.getLocalizedMessage(chatId, creditType.getMessageKey())
         );
 
         ReplyKeyboard localizedKeyboard = keyboardService.getConfirmationKeyboard(chatId);
@@ -69,21 +60,5 @@ public class ConsultationCreditTypeCallbackCommand implements Command {
     @Override
     public String getCommand() {
         return CommandName.CONSULTATION_REQUEST.name();
-    }
-
-    private String getLocalizedMessageByPersonType(Long chatId, PersonType personType) {
-        return switch (personType) {
-            case PERSON_FL -> localizationService.getLocalizedMessage(chatId, PERSON_TYPE_FL);
-            case PERSON_UL -> localizationService.getLocalizedMessage(chatId, PERSON_TYPE_UL);
-        };
-    }
-
-    private String getLocalizedMessageByCreditType(Long chatId, String creditType) {
-        return switch (creditType) {
-            case CREDIT_CONSUMER -> localizationService.getLocalizedMessage(chatId, "credit.type.consumer");
-            case CREDIT_MORTGAGE -> localizationService.getLocalizedMessage(chatId, "credit.type.mortgage");
-            case CREDIT_AUTO -> localizationService.getLocalizedMessage(chatId, "credit.type.auto");
-            default -> localizationService.getLocalizedMessage(chatId, "credit.type.other");
-        };
     }
 }

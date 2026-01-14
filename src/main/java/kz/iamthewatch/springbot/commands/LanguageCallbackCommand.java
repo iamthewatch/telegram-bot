@@ -32,7 +32,7 @@ public class LanguageCallbackCommand implements Command {
             return false;
         }
         String callbackData = getCallbackData(update);
-        return Language.isLanguageCommand(callbackData);
+        return Language.isCallbackCommand(callbackData);
     }
 
     @Override

@@ -18,7 +18,7 @@ public enum Language {
     private final String callbackCode;
     private final String locale;
 
-    public static boolean isLanguageCommand(String callbackData) {
+    public static boolean isCallbackCommand(String callbackData) {
         return BY_CALLBACK.containsKey(callbackData);
     }
 

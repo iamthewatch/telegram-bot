@@ -20,6 +20,11 @@ public final class MessageConstants {
     public static final String PERSON_TYPE_FL = "person.type.fl";
     public static final String PERSON_TYPE_UL = "person.type.ul";
 
+    public static final String CREDIT_TYPE_CONSUMER = "credit.type.consumer";
+    public static final String CREDIT_TYPE_MORTGAGE = "credit.type.mortgage";
+    public static final String CREDIT_TYPE_CAR = "credit.type.car";
+    public static final String CREDIT_TYPE_OTHER = "credit.type.other";
+
     public static final String CONSULTATION_CONFIRM =  "consultation.confirm";
     public static final String CONSULTATION_CREDIT_TYPE_SELECT = "consultation.credit.type.select";
     public static final String CONSULTATION_REQUEST_ACCEPTED = "consultation.request.accepted";

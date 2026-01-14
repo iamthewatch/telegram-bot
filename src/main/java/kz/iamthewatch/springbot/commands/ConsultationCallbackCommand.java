@@ -32,7 +32,7 @@ public class ConsultationCallbackCommand implements Command {
             return false;
         }
         String callbackData = getCallbackData(update);
-        return PersonType.isPersonTypeCommand(callbackData);
+        return PersonType.isCallbackCommand(callbackData);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ConsultationCallbackCommand implements Command {
         userSessionService.setConsultationPersonType(chatId, personType);
 
         String localizedMessage = localizationService.getLocalizedMessage(chatId, CONSULTATION_CREDIT_TYPE_SELECT);
-        ReplyKeyboard localizedKeyboard = keyboardService.getCreditTypeKeyboard(chatId);
+        ReplyKeyboard localizedKeyboard = keyboardService.getCreditTypeKeyboardByPersonType(chatId, personType);
         messageService.sendMessage(chatId, localizedMessage, localizedKeyboard);
     }
 }
