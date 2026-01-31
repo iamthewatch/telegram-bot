@@ -2,10 +2,11 @@ package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
 import kz.iamthewatch.springbot.enums.PersonType;
-import kz.iamthewatch.springbot.service.KeyboardService;
+import kz.iamthewatch.springbot.service.KeyboardFactory;
 import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
 import kz.iamthewatch.springbot.service.MessageTrackerService;
+import kz.iamthewatch.springbot.service.TelegramKeyboardBuilder;
 import kz.iamthewatch.springbot.service.UserSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,8 @@ public class ConsultationCallbackCommand implements Command {
     private final UserSessionService userSessionService;
     private final MessageTrackerService messageTrackerService;
     private final LocalizationService localizationService;
-    private final KeyboardService keyboardService;
+    private final TelegramKeyboardBuilder keyboardBuilder;
+    private final KeyboardFactory keyboardFactory;
     private final MessageService messageService;
 
     @Override
@@ -53,7 +55,7 @@ public class ConsultationCallbackCommand implements Command {
         userSessionService.setConsultationPersonType(chatId, personType);
 
         String localizedMessage = localizationService.getLocalizedMessage(chatId, CONSULTATION_CREDIT_TYPE_SELECT);
-        ReplyKeyboard localizedKeyboard = keyboardService.getCreditTypeKeyboardByPersonType(chatId, personType);
+        ReplyKeyboard localizedKeyboard = keyboardBuilder.build(chatId, keyboardFactory.creditTypes(personType));
         messageService.sendMessage(chatId, localizedMessage, localizedKeyboard);
     }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,11 @@ public enum PersonType {
 
     private final String code;
     private final String messageKey;
+
+    public static Set<PersonType> getAll() {
+        return Arrays.stream(values())
+                .collect(Collectors.toSet());
+    }
 
     public static boolean isCallbackCommand(String code) {
         return BY_CALLBACK.containsKey(code);

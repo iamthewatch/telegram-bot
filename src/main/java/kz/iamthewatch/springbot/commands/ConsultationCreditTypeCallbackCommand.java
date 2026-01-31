@@ -20,7 +20,8 @@ public class ConsultationCreditTypeCallbackCommand implements Command {
     private final UserSessionService userSessionService;
     private final MessageTrackerService messageTrackerService;
     private final LocalizationService localizationService;
-    private final KeyboardService keyboardService;
+    private final TelegramKeyboardBuilder keyboardBuilder;
+    private final KeyboardFactory keyboardFactory;
     private final MessageService messageService;
 
     @Override
@@ -53,7 +54,7 @@ public class ConsultationCreditTypeCallbackCommand implements Command {
                 localizationService.getLocalizedMessage(chatId, creditType.getMessageKey())
         );
 
-        ReplyKeyboard localizedKeyboard = keyboardService.getConfirmationKeyboard(chatId);
+        ReplyKeyboard localizedKeyboard = keyboardBuilder.build(chatId, keyboardFactory.confirmation());
         messageService.sendMessage(chatId, localizedMessage,  localizedKeyboard);
     }
 

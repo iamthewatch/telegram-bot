@@ -12,10 +12,11 @@ import kz.iamthewatch.springbot.dto.ConsultationDto;
 import kz.iamthewatch.springbot.enums.CommandName;
 import kz.iamthewatch.springbot.enums.ConfirmationStatus;
 import kz.iamthewatch.springbot.service.ConsultationRequestService;
-import kz.iamthewatch.springbot.service.KeyboardService;
+import kz.iamthewatch.springbot.service.KeyboardFactory;
 import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
 import kz.iamthewatch.springbot.service.MessageTrackerService;
+import kz.iamthewatch.springbot.service.TelegramKeyboardBuilder;
 import kz.iamthewatch.springbot.service.UserSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,8 @@ public class ConsultationConfirmCallbackCommand implements Command {
     private final ConsultationRequestService consultationRequestService;
     private final MessageTrackerService messageTrackerService;
     private final LocalizationService localizationService;
-    private final KeyboardService keyboardService;
+    private final TelegramKeyboardBuilder keyboardBuilder;
+    private final KeyboardFactory keyboardFactory;
     private final MessageService messageService;
 
     @Override
@@ -47,7 +49,7 @@ public class ConsultationConfirmCallbackCommand implements Command {
         String callbackData = getCallbackData(update);
         messageTrackerService.deleteLastMessage(chatId);
 
-        ReplyKeyboard localizedKeyboard = keyboardService.getMainMenuKeyboard(chatId);
+        ReplyKeyboard localizedKeyboard = keyboardBuilder.build(chatId, keyboardFactory.mainMenu());
 
         ConfirmationStatus.tryFromCallback(callbackData).ifPresent(action -> {
             switch (action) {

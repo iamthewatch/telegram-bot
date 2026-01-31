@@ -1,9 +1,10 @@
 package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
-import kz.iamthewatch.springbot.service.KeyboardService;
+import kz.iamthewatch.springbot.service.KeyboardFactory;
 import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
+import kz.iamthewatch.springbot.service.TelegramKeyboardBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -19,7 +20,8 @@ import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 public class ConsultationCommand implements Command {
 
     private final LocalizationService localizationService;
-    private final KeyboardService keyboardService;
+    private final TelegramKeyboardBuilder keyboardBuilder;
+    private final KeyboardFactory keyboardFactory;
     private final MessageService messageService;
 
     @Override
@@ -36,7 +38,7 @@ public class ConsultationCommand implements Command {
     public void handle(Update update) {
         Long chatId = getChatId(update);
         String localizedMessage = localizationService.getLocalizedMessage(chatId, PERSON_TYPE_SELECT);
-        ReplyKeyboard replyKeyboard = keyboardService.getPersonTypeKeyboard(chatId);
+        ReplyKeyboard replyKeyboard = keyboardBuilder.build(chatId, keyboardFactory.personType());
         messageService.sendMessage(chatId, localizedMessage, replyKeyboard);
     }
 
