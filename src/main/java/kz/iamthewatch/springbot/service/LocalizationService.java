@@ -17,4 +17,8 @@ public class LocalizationService {
         Locale locale = userSessionService.getLocale(chatId);
         return messageSource.getMessage(key, args, locale);
     }
+
+    public String getLocalizedMessage(Locale locale, String key, Object... args) {
+        return messageSource.getMessage(key, args, locale);
+    }
 }

@@ -3,6 +3,7 @@ package kz.iamthewatch.springbot.service;
 import kz.iamthewatch.springbot.enums.CreditType;
 import kz.iamthewatch.springbot.enums.Language;
 import kz.iamthewatch.springbot.enums.PersonType;
+import kz.iamthewatch.springbot.enums.UserState;
 import kz.iamthewatch.springbot.model.UserSession;
 import kz.iamthewatch.springbot.repository.UserSessionRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,11 @@ public class UserSessionService {
     }
 
     @Transactional
+    public UserState getUserState(Long chatId) {
+        return getOrCreateUserSession(chatId).getUserState();
+    }
+
+    @Transactional
     public String getConsultationPersonType(Long chatId) {
         return getOrCreateUserSession(chatId).getConsultationPersonType();
     }
@@ -37,6 +43,13 @@ public class UserSessionService {
     public void setLocale(Long chatId, Language locale) {
         UserSession userSession = getOrCreateUserSession(chatId);
         userSession.setLocale(locale.getLocale());
+        userSessionRepository.save(userSession);
+    }
+
+    @Transactional
+    public void setUserState(Long chatId, UserState userState) {
+        UserSession userSession = getOrCreateUserSession(chatId);
+        userSession.setUserState(userState);
         userSessionRepository.save(userSession);
     }
 
@@ -60,6 +73,7 @@ public class UserSessionService {
         return userSession.orElseGet(() -> {
             UserSession newUserSession = new UserSession();
             newUserSession.setChatId(chatId);
+            newUserSession.setUserState(UserState.IDLE);
             newUserSession.setLocale(Language.LANG_RU.getLocale());
             return userSessionRepository.save(newUserSession);
         });

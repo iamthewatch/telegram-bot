@@ -17,6 +17,10 @@ public final class MessageConstants {
     public static final String LANGUAGE_RU = "language.ru";
     public static final String LANGUAGE_KZ = "language.kk";
 
+    public static final String AI_PROVIDER_ERROR = "ai.provider.error";
+
+    public static final String ASK_QUESTION = "ask.question";
+
     public static final String SYSTEM_ABOUT = "system.about";
 
     public static final String PERSON_TYPE_SELECT = "person.type.select";

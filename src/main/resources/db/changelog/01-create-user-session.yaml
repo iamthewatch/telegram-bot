@@ -20,6 +20,12 @@ databaseChangeLog:
                     nullable: false
 
               - column:
+                  name: user_state
+                  type: text
+                  constraints:
+                    nullable: false
+
+              - column:
                   name: locale
                   type: VARCHAR(20)
 

@@ -2,13 +2,15 @@ package kz.iamthewatch.springbot.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import kz.iamthewatch.springbot.enums.UserState;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -26,6 +28,10 @@ public class UserSession {
 
     @Column(name = "locale")
     private String locale;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_state")
+    private UserState userState;
 
     @Column(name = "consultation_person_type")
     private String consultationPersonType;

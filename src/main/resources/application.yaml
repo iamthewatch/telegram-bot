@@ -2,10 +2,27 @@ spring:
   application:
     name: springbot
 
+  ai:
+    openai:
+      base-url: ${AI_BASE_URL}
+      api-key: ${AI_API_KEY}
+      chat:
+        options:
+          model: ${AI_MODEL_NAME}
+
+    retry:
+      on-client-errors: false
+      on-http-codes: 429,500,502,503,504
+      max-attempts: 5
+      backoff:
+        initial-interval: 2s
+        multiplier: 2
+        max-interval: 20s
+
   datasource:
     url: jdbc:postgresql://localhost:5433/telegram_bot
     username: postgres
-    password: 40593319
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -21,4 +38,4 @@ spring:
     enabled: true
 
 bot:
-  token: 8382087710:AAE3O5MNO7zZ_DcCOCRfuBu5ykiYjHPBGBw
+  token: ${TELEGRAM_BOT_TOKEN}
