@@ -10,8 +10,9 @@ import kz.iamthewatch.springbot.enums.Language;
 import kz.iamthewatch.springbot.enums.PersonType;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_ABOUT;
@@ -69,13 +70,14 @@ public class DefaultKeyboardFactory implements KeyboardFactory {
         );
     }
 
-    private <T> KeyboardDef inlineEnumKeyboard(
-            Set<T> items,
-            Function<T, String> messageKeyExtractor,
-            Function<T, String> callbackExtractor
+    private <E extends Enum<E>> KeyboardDef inlineEnumKeyboard(
+            Collection<E> items,
+            Function<E, String> messageKeyExtractor,
+            Function<E, String> callbackExtractor
     ) {
         return new InlineKeyboardDef(
                 items.stream()
+                        .sorted(Comparator.comparingInt(Enum::ordinal)) // порядок как в enum
                         .map(item -> List.of(
                                 new KeyboardButtonDef(
                                         messageKeyExtractor.apply(item),

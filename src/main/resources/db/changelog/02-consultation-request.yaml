@@ -39,6 +39,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
                   name: client_type
                   type: VARCHAR(255)
                   constraints:

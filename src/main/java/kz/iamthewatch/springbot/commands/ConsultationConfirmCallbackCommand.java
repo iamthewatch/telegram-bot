@@ -65,7 +65,7 @@ public class ConsultationConfirmCallbackCommand implements Command {
     }
 
     private void handleAcceptedCallback(Long chatId, Update update, ReplyKeyboard keyboard) {
-        consultationRequestService.saveRequest(createConsultationDto(chatId, update));
+        consultationRequestService.saveOrUpdateRequest(createConsultationDto(chatId, update));
         messageService.sendMessage(
                 chatId,
                 localizationService.getLocalizedMessage(chatId, CONSULTATION_REQUEST_ACCEPTED),
