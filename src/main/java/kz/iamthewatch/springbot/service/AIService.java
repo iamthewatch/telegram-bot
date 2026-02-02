@@ -2,7 +2,6 @@ package kz.iamthewatch.springbot.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.retry.NonTransientAiException;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
