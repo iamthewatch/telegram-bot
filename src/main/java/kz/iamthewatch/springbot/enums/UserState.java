@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserState {
     IDLE("IDLE"),
-    WAITING_FOR_ANSWER("WAITING_FOR_ANSWER");
+    AI_CHAT("AI_CHAT");
 
     private final String name;
 }

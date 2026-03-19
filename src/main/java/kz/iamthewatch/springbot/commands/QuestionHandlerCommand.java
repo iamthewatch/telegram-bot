@@ -29,7 +29,7 @@ public class QuestionHandlerCommand implements Command {
         }
         Long chatId = update.getMessage().getChatId();
         UserState userState = userSessionService.getUserState(chatId);
-        return userState.equals(UserState.WAITING_FOR_ANSWER);
+        return userState.equals(UserState.AI_CHAT);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class QuestionHandlerCommand implements Command {
         String question = getMessageText(update);
         Locale locale = userSessionService.getLocale(chatId);
 
-        String answer = aiService.answerQuestion(question, locale);
+        String answer = aiService.answerQuestion(chatId, question, locale);
 
         userSessionService.setUserState(chatId, UserState.IDLE);
         messageService.sendMessage(chatId, answer);

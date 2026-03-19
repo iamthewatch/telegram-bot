@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-chat_message_history
+      author: iamthewatch
+      changes:
+        - createTable:
+            tableName: chat_message_history
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: chat_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_message
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: assistant_message
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+      rollback:
+        - dropTable:
+            tableName: chat_message_history

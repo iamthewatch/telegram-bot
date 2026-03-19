@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/02-consultation-request.yaml
   - include:
       file: db/changelog/03-consultation-credit-type.yaml
+  - include:
+      file: db/changelog/04-create-chat-message-history.yaml

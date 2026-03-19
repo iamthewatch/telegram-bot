@@ -35,7 +35,7 @@ public class AskQuestionCommand implements Command {
     @Override
     public void handle(Update update) {
         Long chatId = getChatId(update);
-        userSessionService.setUserState(chatId, UserState.WAITING_FOR_ANSWER);
+        userSessionService.setUserState(chatId, UserState.AI_CHAT);
         String localizedMessage = localizationService.getLocalizedMessage(chatId, ASK_QUESTION);
         messageService.sendMessage(chatId, localizedMessage);
     }
