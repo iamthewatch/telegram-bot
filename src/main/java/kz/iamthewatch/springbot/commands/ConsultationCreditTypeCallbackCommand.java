@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Component
 @RequiredArgsConstructor
-public class ConsultationCreditTypeCallbackCommand implements Command {
+public class ConsultationCreditTypeCallbackCommand extends AbstractCallbackCommand {
 
     private final UserSessionService userSessionService;
     private final MessageTrackerService messageTrackerService;
@@ -25,11 +25,8 @@ public class ConsultationCreditTypeCallbackCommand implements Command {
     private final MessageService messageService;
 
     @Override
-    public boolean canHandle(Update update) {
-        if (!update.hasCallbackQuery()) {
-            return false;
-        }
-        return CreditType.isCallbackCommand(getCallbackData(update));
+    protected boolean matches(String callbackData) {
+        return CreditType.isCallbackCommand(callbackData);
     }
 
     @Override

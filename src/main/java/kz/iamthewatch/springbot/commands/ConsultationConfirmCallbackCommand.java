@@ -25,7 +25,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Component
 @RequiredArgsConstructor
-public class ConsultationConfirmCallbackCommand implements Command {
+public class ConsultationConfirmCallbackCommand extends AbstractCallbackCommand {
 
     private final UserSessionService userSessionService;
     private final ConsultationRequestService consultationRequestService;
@@ -36,11 +36,8 @@ public class ConsultationConfirmCallbackCommand implements Command {
     private final MessageService messageService;
 
     @Override
-    public boolean canHandle(Update update) {
-        if (!update.hasCallbackQuery()) {
-            return false;
-        }
-        return ConfirmationStatus.isCallbackCommand(getCallbackData(update));
+    protected boolean matches(String callbackData) {
+        return ConfirmationStatus.isCallbackCommand(callbackData);
     }
 
     @Override

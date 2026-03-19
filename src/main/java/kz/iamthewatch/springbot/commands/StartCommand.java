@@ -7,7 +7,6 @@ import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
 import kz.iamthewatch.springbot.service.TelegramKeyboardBuilder;
 import kz.iamthewatch.springbot.service.UserSessionService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -15,26 +14,32 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_START;
 import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_WELCOME;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
-import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 
 @Component
-@RequiredArgsConstructor
-public class StartCommand implements Command {
+public class StartCommand extends AbstractLocalizedMessageCommand {
 
     private final MessageService messageService;
-    private final LocalizationService localizationService;
     private final TelegramKeyboardBuilder keyboardBuilder;
     private final KeyboardFactory keyboardFactory;
     private final UserSessionService userSessionService;
 
+    public StartCommand(
+            MessageService messageService,
+            LocalizationService localizationService,
+            TelegramKeyboardBuilder keyboardBuilder,
+            KeyboardFactory keyboardFactory,
+            UserSessionService userSessionService
+    ) {
+        super(userSessionService, localizationService);
+        this.messageService = messageService;
+        this.keyboardBuilder = keyboardBuilder;
+        this.keyboardFactory = keyboardFactory;
+        this.userSessionService = userSessionService;
+    }
+
     @Override
-    public boolean canHandle(Update update) {
-        if (!update.hasMessage() || !update.getMessage().hasText()) {
-            return false;
-        }
-        Long chatId = getChatId(update);
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_START);
-        return getMessageText(update).equals(localizedMessage);
+    protected String triggerMessageKey() {
+        return MENU_START;
     }
 
     @Override

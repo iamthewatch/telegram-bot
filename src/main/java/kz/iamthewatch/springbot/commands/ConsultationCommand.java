@@ -7,7 +7,6 @@ import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
 import kz.iamthewatch.springbot.service.TelegramKeyboardBuilder;
 import kz.iamthewatch.springbot.service.UserSessionService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -15,29 +14,35 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_CONSULTATION_REQUEST;
 import static kz.iamthewatch.springbot.utils.MessageConstants.PERSON_TYPE_SELECT;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
-import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 
 @Component
-@RequiredArgsConstructor
-public class ConsultationCommand implements Command {
+public class ConsultationCommand extends AbstractLocalizedMessageCommand {
 
-    private final LocalizationService localizationService;
     private final TelegramKeyboardBuilder keyboardBuilder;
     private final KeyboardFactory keyboardFactory;
     private final MessageService messageService;
-    private final UserSessionService userSessionService;
+
+    public ConsultationCommand(
+            LocalizationService localizationService,
+            TelegramKeyboardBuilder keyboardBuilder,
+            KeyboardFactory keyboardFactory,
+            MessageService messageService,
+            UserSessionService userSessionService
+    ) {
+        super(userSessionService, localizationService);
+        this.keyboardBuilder = keyboardBuilder;
+        this.keyboardFactory = keyboardFactory;
+        this.messageService = messageService;
+    }
 
     @Override
-    public boolean canHandle(Update update) {
-        if (!update.hasMessage() || !update.getMessage().hasText()) {
-            return false;
-        }
-        Long chatId = getChatId(update);
-        if (!UserState.IDLE.equals(userSessionService.getUserState(chatId))) {
-            return false;
-        }
-        String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_CONSULTATION_REQUEST);
-        return getMessageText(update).equals(localizedMessage);
+    protected UserState requiredState() {
+        return UserState.IDLE;
+    }
+
+    @Override
+    protected String triggerMessageKey() {
+        return MENU_CONSULTATION_REQUEST;
     }
 
     @Override

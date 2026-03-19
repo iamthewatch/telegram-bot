@@ -19,7 +19,7 @@ import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
 
 @Component
 @RequiredArgsConstructor
-public class ConsultationCallbackCommand implements Command {
+public class ConsultationCallbackCommand extends AbstractCallbackCommand {
 
     private final UserSessionService userSessionService;
     private final MessageTrackerService messageTrackerService;
@@ -29,11 +29,7 @@ public class ConsultationCallbackCommand implements Command {
     private final MessageService messageService;
 
     @Override
-    public boolean canHandle(Update update) {
-        if (!update.hasCallbackQuery()) {
-            return false;
-        }
-        String callbackData = getCallbackData(update);
+    protected boolean matches(String callbackData) {
         return PersonType.isCallbackCommand(callbackData);
     }
 

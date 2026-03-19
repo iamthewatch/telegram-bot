@@ -6,7 +6,6 @@ import kz.iamthewatch.springbot.service.AIService;
 import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
 import kz.iamthewatch.springbot.service.UserSessionService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -17,25 +16,31 @@ import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
 import static kz.iamthewatch.springbot.utils.UpdateUtils.getMessageText;
 
 @Component
-@AllArgsConstructor
-public class QuestionHandlerCommand implements Command {
+public class QuestionHandlerCommand extends AbstractStateMessageCommand {
 
     private final AIService aiService;
     private final MessageService messageService;
-    private final UserSessionService userSessionService;
     private final LocalizationService localizationService;
 
-    @Override
-    public boolean canHandle(Update update) {
-        if (!update.hasMessage() || !update.getMessage().hasText()) {
-            return false;
-        }
-        Long chatId = update.getMessage().getChatId();
-        UserState userState = userSessionService.getUserState(chatId);
-        if (!userState.equals(UserState.AI_CHAT)) {
-            return false;
-        }
+    public QuestionHandlerCommand(
+            AIService aiService,
+            MessageService messageService,
+            UserSessionService userSessionService,
+            LocalizationService localizationService
+    ) {
+        super(userSessionService);
+        this.aiService = aiService;
+        this.messageService = messageService;
+        this.localizationService = localizationService;
+    }
 
+    @Override
+    protected UserState requiredState() {
+        return UserState.AI_CHAT;
+    }
+
+    @Override
+    protected boolean additionalCondition(Update update, Long chatId) {
         String messageText = getMessageText(update);
         String exitText = localizationService.getLocalizedMessage(chatId, AI_CHAT_EXIT);
         return !messageText.equals(exitText);

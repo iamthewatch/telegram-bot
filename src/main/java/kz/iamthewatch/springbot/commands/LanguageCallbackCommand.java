@@ -19,7 +19,7 @@ import static kz.iamthewatch.springbot.utils.UpdateUtils.getChatId;
 
 @Component
 @RequiredArgsConstructor
-public class LanguageCallbackCommand implements Command {
+public class LanguageCallbackCommand extends AbstractCallbackCommand {
 
     private final MessageTrackerService messageTrackerService;
     private final LocalizationService localizationService;
@@ -29,11 +29,7 @@ public class LanguageCallbackCommand implements Command {
     private final MessageService messageService;
 
     @Override
-    public boolean canHandle(Update update) {
-        if (!update.hasCallbackQuery()) {
-            return false;
-        }
-        String callbackData = getCallbackData(update);
+    protected boolean matches(String callbackData) {
         return Language.isCallbackCommand(callbackData);
     }
 
