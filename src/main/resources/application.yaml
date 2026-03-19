@@ -20,8 +20,8 @@ spring:
         max-interval: 20s
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/telegram_bot
-    username: postgres
+    url: jdbc:postgresql://localhost:5433/${DB_NAME}
+    username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 

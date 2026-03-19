@@ -1,4 +1,20 @@
 services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springbot-backend
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+    ports:
+      - "8080:8080"
+
   postgres:
     image: postgres:15.0
     container_name: telegram-bot-db
@@ -8,9 +24,9 @@ services:
     volumes:
       - telegram_bot_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: telegram_bot
+      POSTGRES_DB: ${DB_NAME}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
       interval: 10s
