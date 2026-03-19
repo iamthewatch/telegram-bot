@@ -12,8 +12,8 @@ public abstract class AbstractMessageCommand implements Command {
         this.userSessionService = userSessionService;
     }
 
-    protected boolean hasTextMessage(Update update) {
-        return update.hasMessage() && update.getMessage().hasText();
+    protected boolean hasNoTextMessage(Update update) {
+        return !update.hasMessage() && !update.getMessage().hasText();
     }
 
     protected boolean isInState(Long chatId, UserState state) {

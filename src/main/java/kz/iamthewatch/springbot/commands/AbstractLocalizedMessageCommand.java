@@ -22,7 +22,7 @@ public abstract class AbstractLocalizedMessageCommand extends AbstractMessageCom
 
     @Override
     public boolean canHandle(Update update) {
-        if (!hasTextMessage(update)) {
+        if (hasNoTextMessage(update)) {
             return false;
         }
 

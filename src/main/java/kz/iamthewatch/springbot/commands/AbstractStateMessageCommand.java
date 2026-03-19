@@ -13,7 +13,7 @@ public abstract class AbstractStateMessageCommand extends AbstractMessageCommand
 
     @Override
     public boolean canHandle(Update update) {
-        if (!hasTextMessage(update)) {
+        if (hasNoTextMessage(update)) {
             return false;
         }
         Long chatId = getChatId(update);

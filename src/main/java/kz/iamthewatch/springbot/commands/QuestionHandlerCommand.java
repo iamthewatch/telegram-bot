@@ -52,6 +52,7 @@ public class QuestionHandlerCommand extends AbstractStateMessageCommand {
         String question = getMessageText(update);
         Locale locale = userSessionService.getLocale(chatId);
 
+        messageService.sendTyping(chatId);
         String answer = aiService.answerQuestion(chatId, question, locale);
 
         messageService.sendMessage(chatId, answer);
