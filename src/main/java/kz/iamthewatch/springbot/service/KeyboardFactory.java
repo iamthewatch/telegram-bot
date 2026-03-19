@@ -5,6 +5,7 @@ import kz.iamthewatch.springbot.enums.PersonType;
 
 public interface KeyboardFactory {
     KeyboardDef mainMenu();
+    KeyboardDef aiChat();
     KeyboardDef language();
     KeyboardDef confirmation();
     KeyboardDef personType();

@@ -19,6 +19,7 @@ import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_ABOUT;
 import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_ASK_QUESTION;
 import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_CONSULTATION_REQUEST;
 import static kz.iamthewatch.springbot.utils.MessageConstants.MENU_LANGUAGE;
+import static kz.iamthewatch.springbot.utils.MessageConstants.AI_CHAT_EXIT;
 
 @Service
 public class DefaultKeyboardFactory implements KeyboardFactory {
@@ -29,6 +30,16 @@ public class DefaultKeyboardFactory implements KeyboardFactory {
                 List.of(
                         List.of(MENU_ABOUT, MENU_LANGUAGE),
                         List.of(MENU_CONSULTATION_REQUEST, MENU_ASK_QUESTION)
+                ),
+                true, false
+        );
+    }
+
+    @Override
+    public KeyboardDef aiChat() {
+        return new ReplyKeyboardDef(
+                List.of(
+                        List.of(AI_CHAT_EXIT)
                 ),
                 true, false
         );

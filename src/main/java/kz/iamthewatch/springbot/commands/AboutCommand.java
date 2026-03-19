@@ -1,8 +1,10 @@
 package kz.iamthewatch.springbot.commands;
 
 import kz.iamthewatch.springbot.enums.CommandName;
+import kz.iamthewatch.springbot.enums.UserState;
 import kz.iamthewatch.springbot.service.LocalizationService;
 import kz.iamthewatch.springbot.service.MessageService;
+import kz.iamthewatch.springbot.service.UserSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -18,6 +20,7 @@ public class AboutCommand implements Command {
 
     private final MessageService messageService;
     private final LocalizationService localizationService;
+    private final UserSessionService userSessionService;
 
     @Override
     public boolean canHandle(Update update) {
@@ -25,6 +28,9 @@ public class AboutCommand implements Command {
             return false;
         }
         Long chatId = getChatId(update);
+        if (!UserState.IDLE.equals(userSessionService.getUserState(chatId))) {
+            return false;
+        }
         String localizedMessage = localizationService.getLocalizedMessage(chatId, MENU_ABOUT);
         return getMessageText(update).equals(localizedMessage);
     }

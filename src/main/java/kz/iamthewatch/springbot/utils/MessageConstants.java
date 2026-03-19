@@ -20,6 +20,8 @@ public final class MessageConstants {
     public static final String AI_PROVIDER_ERROR = "ai.provider.error";
 
     public static final String ASK_QUESTION = "ask.question";
+    public static final String AI_CHAT_EXIT = "ai.chat.exit";
+    public static final String AI_CHAT_EXITED = "ai.chat.exited";
 
     public static final String SYSTEM_ABOUT = "system.about";
 
